@@ -1,71 +1,32 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
-
+import MovieCard from "./components/MovieCard";
+import GithubCard from "./components/GithubCard";
+import SliderCard from "./components/SilderCard";
+import Navbar from "./components/Navbar";
+import NotFound from "./components/NotFound";
+import VendingMachine from "./components/VendingMachine";
 import "./App.css";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Soda from "./components/Soda";
+import Chips from "./components/Chips";
+import Fish from "./components/Fish";
 
 function App() {
-  const [count, setCount] = useState("");
-  const [data, setData] = useState([]);
-  const [dataGit, setDataGit] = useState([]);
-
-  async function handleSearch() {
-    const res = await fetch(
-      `https://www.omdbapi.com/?apikey=a407a7b3&s=${count}`
-    );
-    const data = await res.json();
-
-    console.log(data.Search, "data");
-    setData(data.Search);
-  }
-
-  useEffect(() => {
-    axios({
-      url: "https://api.github.com/users",
-      method: "GET",
-    })
-      .then((res) => {
-        setDataGit(res);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-  }, []);
-
   return (
     <>
-      <input
-        type="text"
-        value={count}
-        onChange={(e) => {
-          setCount(e.target.value);
-        }}
-      />
-      <button onClick={handleSearch}>Search</button>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 20 + "px" }}>
-        {data.map((item, index) => (
-          <div style={{ border: 1 + "px solid white" }} key={index}>
-            <h2>{item.Title}</h2>
-            <p>{item.Year}</p>
-            <img src={item.Poster} alt={item} />
-          </div>
-        ))}
-      </div>
+      <BrowserRouter>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<MovieCard />} />
+          <Route path="/githubcard" element={<GithubCard />} />
+          <Route path="/sildercard" element={<SliderCard />} />
+          <Route path="/vendingmachine" element={<VendingMachine />} />
+          <Route path="/vendingmachine/soda" element={<Soda />} />
+          <Route path="/vendingmachine/chips" element={<Chips />} />
+          <Route path="/vendingmachine/fish" element={<Fish />} />
 
-      <hr />
-
-      <div>
-        {console.log(dataGit, "dataGit")}
-        <h1>Git Hub Users</h1>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 20 + "px" }}>
-          {dataGit?.data?.map((item, index) => (
-            <div style={{ border: 1 + "px solid white" }} key={index}>
-              <h2>{item.login}</h2>
-              <p>{item.type}</p>
-              <img src={item.avatar_url} alt={item} />
-            </div>
-          ))}
-        </div>
-      </div>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
     </>
   );
 }
